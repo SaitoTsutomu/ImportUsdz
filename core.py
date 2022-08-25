@@ -1,59 +1,35 @@
 import bpy
-from bpy.props import IntProperty
+from bpy.props import FloatProperty
 
 from .register_class import _get_cls
 
 
-class CDO_OT_diff_obj(bpy.types.Operator):
-    """2つのオブジェクトの異なる点を選択"""
+class CIU_OT_import_usdz(bpy.types.Operator):
+    """Import Usdz file"""
 
-    bl_idname = "object.diff_obj"
-    bl_label = "Select Diff 2 Obj"
-    bl_description = "Select the different vertices of 2 objects."
+    bl_idname = "object.import_usdz"
+    bl_label = "Import Usdz"
+    bl_description = "Import Usdz file."
+    bl_options = {"REGISTER", "UNDO"}
 
-    limit: IntProperty() = IntProperty(default=1000)  # type: ignore
+    scale: FloatProperty() = FloatProperty(default=1)  # type: ignore
 
     def execute(self, context):
-        objs = [obj for obj in context.selected_objects if obj.type == "MESH"]
-        if len(objs) != 2:
-            self.report({"INFO"}, "Select 2 objects.")
-            return {"CANCELLED"}
-        bpy.ops.object.mode_set(mode="EDIT")  # for deselect
-        bpy.ops.mesh.select_mode(type="VERT")
-        bpy.ops.mesh.select_all(action="DESELECT")
-        bpy.ops.object.mode_set(mode="OBJECT")  # for select
-        dif = set(tuple(vtx.co) for vtx in objs[0].data.vertices) ^ set(
-            tuple(vtx.co) for vtx in objs[1].data.vertices
-        )
-        for obj in objs:
-            count = 0
-            for i, vtx in enumerate(obj.data.vertices):
-                if tuple(vtx.co) in dif:
-                    if count >= self.limit:
-                        break
-                    count += 1
-                    obj.data.vertices[i].select = True
-        bpy.ops.object.mode_set(mode="EDIT")  # for confirm
-        # show wireframe
-        for area in bpy.context.screen.areas:
-            if area.type == "VIEW_3D":
-                for space in area.spaces:
-                    if space.type == "VIEW_3D":
-                        space.shading.type = "WIREFRAME"
+
         return {"FINISHED"}
 
 
-class CDO_PT_bit(bpy.types.Panel):
-    bl_label = "DiffObj"
+class CIU_PT_bit(bpy.types.Panel):
+    bl_label = "ImportUsdz"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Edit"
 
     def draw(self, context):
-        self.layout.prop(context.scene, "limit", text="Limit")
-        text = CDO_OT_diff_obj.bl_label
-        prop = self.layout.operator(CDO_OT_diff_obj.bl_idname, text=text)
-        prop.limit = context.scene.limit
+        self.layout.prop(context.scene, "scale", text="Scale")
+        text = CIU_OT_import_usdz.bl_label
+        prop = self.layout.operator(CIU_OT_import_usdz.bl_idname, text=text)
+        prop.scale = context.scene.scale
 
 
 # __init__.pyで使用
