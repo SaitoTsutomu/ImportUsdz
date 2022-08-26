@@ -37,6 +37,8 @@ class CIU_OT_import_usdz(bpy.types.Operator):
             return {"CANCELLED"}
         # usdcをインポート
         bpy.ops.wm.usd_import(filepath=str(usdc), scale=self.scale, import_usd_preview=True)
+        # 画像をパック
+        bpy.ops.file.pack_all()
         return {"FINISHED"}
 
 
