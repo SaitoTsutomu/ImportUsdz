@@ -1,4 +1,5 @@
 import os.path
+import shutil
 import zipfile
 from pathlib import Path
 
@@ -27,6 +28,7 @@ class CIU_OT_import_usdz(bpy.types.Operator):
             self.report({"INFO"}, "No files.")
             return {"CANCELLED"}
         tmpdir = "/tmp/impusdz"
+        shutil.rmtree(tmpdir)
         os.makedirs(tmpdir, exist_ok=True)
         # tmpdirに解凍
         with zipfile.ZipFile(file) as zf:
