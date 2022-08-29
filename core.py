@@ -18,7 +18,7 @@ class CIU_OT_import_usdz(bpy.types.Operator):
     bl_description = "Import Usdz file."
     bl_options = {"REGISTER", "UNDO"}
 
-    scale: FloatProperty() = FloatProperty(default=1)  # type: ignore
+    scale: FloatProperty() = FloatProperty(default=0.01)  # type: ignore
 
     def execute(self, context):
         # Downloadsの最新usdzファイルを取得
