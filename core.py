@@ -18,7 +18,7 @@ class CIU_OT_import_usdz(bpy.types.Operator):
     bl_description = "Import Usdz file."
     bl_options = {"REGISTER", "UNDO"}
 
-    scale: FloatProperty() = FloatProperty(default=0.01)  # type: ignore
+    scale: FloatProperty() = FloatProperty(default=1)  # type: ignore
 
     def execute(self, context):
         # Downloadsの最新usdzファイルを取得
@@ -39,7 +39,8 @@ class CIU_OT_import_usdz(bpy.types.Operator):
             self.report({"INFO"}, "No usdc.")
             return {"CANCELLED"}
         # usdcをインポート
-        bpy.ops.wm.usd_import(filepath=str(usdc), scale=self.scale, import_usd_preview=True)
+        scale = self.scale * 0.01
+        bpy.ops.wm.usd_import(filepath=str(usdc), scale=scale, import_usd_preview=True)
         # 画像をパック
         bpy.ops.file.pack_all()
         return {"FINISHED"}
