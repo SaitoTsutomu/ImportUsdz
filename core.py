@@ -11,7 +11,7 @@ from .register_class import _get_cls
 try:
     from more_itertools import first, last
 except ModuleNotFoundError as e:
-    print(f"{Path(__file__).parent.name}: {e}")
+    print(f"\033[31m{Path(__file__).parent.name}: {e}\033[0m")
 
 
 class CIU_OT_import_usdz(bpy.types.Operator):
