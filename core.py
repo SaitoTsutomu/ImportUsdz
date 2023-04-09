@@ -50,6 +50,25 @@ class CIU_OT_import_usdz(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class CIU_OT_import_glb(bpy.types.Operator):
+    """Import GLB file"""
+
+    bl_idname = "object.import_glb"
+    bl_label = "Import GLB"
+    bl_description = "Import GLB file."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        # Downloadsの最新GLBファイルを取得
+        gl = Path(os.path.expanduser("~/Downloads")).glob("*.glb")
+        file = last(sorted((fnam.stat().st_mtime, fnam) for fnam in gl), (0, ""))[-1]
+        if not file:
+            self.report({"INFO"}, "No files.")
+            return {"CANCELLED"}
+        bpy.ops.import_scene.gltf(filepath=str(file))
+        return {"FINISHED"}
+
+
 class CIU_PT_bit(bpy.types.Panel):
     bl_label = "ImportUsdz"
     bl_space_type = "VIEW_3D"
@@ -61,6 +80,8 @@ class CIU_PT_bit(bpy.types.Panel):
         text = CIU_OT_import_usdz.bl_label
         prop = self.layout.operator(CIU_OT_import_usdz.bl_idname, text=text)
         prop.scale = context.scene.scale
+        text = CIU_OT_import_glb.bl_label
+        self.layout.operator(CIU_OT_import_glb.bl_idname, text=text)
 
 
 # __init__.pyで使用
