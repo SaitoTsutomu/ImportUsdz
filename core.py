@@ -10,7 +10,7 @@ from .register_class import _get_cls
 
 try:
     from more_itertools import first, last
-except ModuleNotFoundError as e:
+except ImportError as e:
     print(f"\033[31m{Path(__file__).parent.name}: {e}\033[0m")
 
 
