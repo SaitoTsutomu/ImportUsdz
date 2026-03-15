@@ -31,20 +31,19 @@ class CIU_OT_import_usdz(bpy.types.Operator):
         if not file:
             self.report({"INFO"}, "No files.")
             return {"CANCELLED"}
-        tmpdir = "/tmp/impusdz"
-        if os.path.isdir(tmpdir):
+        tmpdir = Path("/tmp/impusdz")
+        if tmpdir.is_dir():
             shutil.rmtree(tmpdir)
-        os.makedirs(tmpdir, exist_ok=True)
+        tmpdir.mkdir(exist_ok=True, parents=True)
         # tmpdirに解凍
         with zipfile.ZipFile(file) as zf:
             zf.extractall(tmpdir)
-        usdc = first(Path(tmpdir).glob("*.usdc"), "")
+        usdc = first(tmpdir.glob("*.usdc"), "")
         if not usdc:
             self.report({"INFO"}, "No usdc.")
             return {"CANCELLED"}
         # usdcをインポート
-        scale = self.scale * 0.01
-        bpy.ops.wm.usd_import(filepath=str(usdc), scale=scale, import_usd_preview=True)
+        bpy.ops.wm.usd_import(filepath=str(usdc), scale=self.scale, import_usd_preview=True)
         # 画像をパック
         bpy.ops.file.pack_all()
         return {"FINISHED"}
